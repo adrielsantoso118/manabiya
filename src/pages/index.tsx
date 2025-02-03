@@ -14,12 +14,18 @@ const ManabiyaPrototype = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
-  const bgColor = 'bg-white';
-  const textColor = 'text-gray-900';
-  const textColorSecondary = 'text-gray-600';
-  const cardBg = 'bg-white';
-  const cardHoverBg = 'hover:bg-gray-50';
-  const borderColor = 'border-gray-200';
+  // Sound effects initialization
+  const [correctSound] = useState(() => 
+    typeof Audio !== 'undefined' 
+      ? new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdH2Dam9yYmBhcHR3dHJzi5KLhIeEhot+eXyEkpWYmI+RkZOQi4yTm6Wqq6yrp6mnqaaqrLO3tbCnnJeYmZyZlJGUkpOVlZKUkpCBaF1kaGt0fH+BfHx+gIKFiIuMjoqEg4aJi42LiYiHjZWYm5mVk5KRlpmbnZ2Yl5KKf3l9enl5fYGAf4GFjJWXl5WZm52RiYF+gH99gIWKi4yIhYOEhIKBf4GFiYyLiomHh4iHjJCVlJWTkY+RkpGOiYqJjY+PjYuKjI2Mi4mHhcR9c3WEhX9yeHp/hYuGgYB/gYSGioyMkZWZm5ycmpqcm52bmpmamZqanJqYlZSYmZeUkpCSkpCNi4qLioiHhoeGhYSCgYCBgoKBgYB/f4CAgICAgH9+f39/f39+f39/gICAf35/gIGCg4KBgoOEhYWEgYB/f4CBgoGAgICBg4aIiYiHh4iKi4uJh4WDg4SEg4GAgYOFhoWEg4OEhYWEg4KCgoKBgIB/f4CAgICAgYGBgYGAgICAgIGBgoKBgYGCg4SEg4OCgoOEhYSDgoKDhISEg4KCg4WGh4aFhIWGh4eGhIOChISEg4KBgoSFhoWEg4OEhYaGhYSDg4SEhIOCgYKDg4OCgYGBgoODgoGAgYGCgoKBgICAgYGBgIB/gICAgIB/f39/gICAgH9/f4CAgICAf3+AgIGBgYCAgIGCgoKBgICAgYKCgoGAgIGCg4ODgoGBgoODg4KBgYGCgoKCgYGBgoKCgoGBgYGCgoKCgYGBgYKCgoGBgYGBgoKBgYGBgYGBgYGAgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYCBgYGBgYGBgICBgYGBgICAgIGBgYGAgICAgYGBgYCAgICBgYGBgICAgIGBgYGAgICAgYGBgYCAgICAgYGBgICAgIGBgYGAgICAgYGBgYCAgICBgYGBgICAgIGBgYGAgICAgYGBgYCAgICBgYGBgICAgIGBgYGAgICAgYGBgYCAgICAgYGBgICAgICBgYGAgICAgIGBgYCAgICAgYGBgICAgICAgYGAgICAgICBgYCAgICAgIGBgICAgICAgYGAgICAgICBgYCAgICAgIGBgICAgICAgYGAgICAgICAgYGAgICAgICBgYCAgICAgIGBgICAgICAgIGAgICAgICAgYCAgICAgICBgICAgICAgIGAgICAgICAgYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB+h4SEhBwXHDM1PDs+RUhCRUE/R0dLR0lJR0A+PkhLTEVAPz0/Q0VGQT04OT5EQz84ODc7QkVCPzo5PEBAPz05ODxAQkE/PDg5PUFDQj85OD1CQ0A8ODpARUdEQD07PUBAPz07PD5DRkVCP0JFRkVIRkRBPz5DQj89PD5BR0pIRkRBQEFAP0A/PkBERUVEQUE/P0BAQEA+PUFFR0RGREA+PkFCQT8+P0JGR0VDQD8/QURAPD4/QkZHRkRBPjxBQ0I/Pj9DRkhGQ0A+P0FCQkA/P0FDR0ZGREA/P0BCQkA/P0FERkdFQ0A/P0FCQkA/P0FDRkdGREE/P0BBQkFAP0BCRUdGRUE/PkBBQkFAPz9CR0hHRUE+PkBBQkE/Pz9CR0hHRUI/PkBBQUFAPz9BRUdHRkNAPj9BQUE/Pz9BRUdHRkRAPj5AQUE/Pz9AQ0ZHRUNAPD5BQUE/Pz8/Q0ZIRUNAPD1AQUEZ')
+      : null
+  );
+
+  const [wrongSound] = useState(() => 
+    typeof Audio !== 'undefined'
+      ? new Audio('data:audio/wav;base64,UklGRigBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQBAABy0nXSeM94w3eoep58q4C2hMOIz4zZkOSU8Jj7nAShDqUbqSitNbFCs0+3XLtos3W4gr2PwpzHqczA0dPW5tv53w3kH+gy7UXyWPdt/IYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==')
+      : null
+  );
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -40,14 +46,14 @@ const ManabiyaPrototype = () => {
     setTimeout(() => {
       setIsTransitioning(false);
       setCurrentPage(nextPage);
-    }, 3000);
+    }, 5000);
   };
 
   const LoadingScreen = () => (
     <div className="h-screen w-full flex flex-col items-center justify-center bg-white">
       <h1 
         className="text-5xl md:text-5xl font-bold text-blue-500 mb-4"
-        style={{ fontFamily: 'Montserrat, sans-serif', marginTop: '-20%' }}
+        style={{ fontFamily: 'Montserrat, sans-serif', marginTop: '-25%' }}
       >
         manabiya
       </h1>
@@ -59,20 +65,112 @@ const ManabiyaPrototype = () => {
     </div>
   );
 
-  const TransitionScreen = () => (
-    <div className="h-screen w-full flex flex-col items-center justify-center bg-white">
-      <h1
-        className="text-2xl text-blue-500 mb-4 font-serif text-center max-w-3xl px-4"
-        style={{ fontFamily: 'Montserrat, sans-serif', marginTop: '-20%' }}
-      >
-        Creating Your Personalized Experience
-      </h1>
-      <div className="w-64 h-2 bg-gray-300 rounded-full">
-        <div className="h-full bg-blue-500 rounded-full transition-all" style={{ width: isTransitioning ? '100%' : '0%' }} />
+  const TransitionScreen = () => {
+    const [progress, setProgress] = useState(0);
+    const [currentStep, setCurrentStep] = useState(0);
+    
+    const loadingSteps = [
+      {
+        text: "Finding the perfect words for you...",
+        icon: "✨"
+      },
+      {
+        text: "Crafting personalized examples...",
+        icon: "📝"
+      },
+      {
+        text: "Preparing your study path...",
+        icon: "🗺️"
+      },
+      {
+        text: "Almost ready for your journey!",
+        icon: "🚀"
+      }
+    ];
+  
+    useEffect(() => {
+      const progressInterval = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(progressInterval);
+            return 100;
+          }
+          return prev + 1;
+        });
+      }, 50);
+  
+      const stepInterval = setInterval(() => {
+        setCurrentStep(prev => (prev + 1) % loadingSteps.length);
+      }, 2000);
+  
+      return () => {
+        clearInterval(progressInterval);
+        clearInterval(stepInterval);
+      };
+    }, []);
+  
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-white">
+        <h1
+          className="text-3xl text-blue-500 font-bold mb-12"
+          style={{ fontFamily: 'Montserrat, sans-serif', marginTop: '-20%' }}
+        >
+          manabiya
+        </h1>
+  
+        <div className="text-center mb-8 relative">
+          <div className="flex items-center justify-center mb-3 space-x-2">
+            <span className="text-2xl">{loadingSteps[currentStep].icon}</span>
+            <p 
+              className="text-lg text-gray-700 animate-fade-in"
+              key={currentStep} // Forces re-render of animation
+            >
+              {loadingSteps[currentStep].text}
+            </p>
+          </div>
+          <p className="text-sm text-gray-500">{progress}%</p>
+        </div>
+  
+        {/* Main progress bar */}
+        <div className="w-64 h-2 bg-gray-100 rounded-full overflow-hidden mb-4">
+          <div 
+            className="h-full bg-gradient-to-r from-blue-400 to-blue-500 rounded-full transition-all duration-300 ease-out"
+            style={{ 
+              width: `${progress}%`,
+              boxShadow: '0 0 8px rgba(59, 130, 246, 0.5)'
+            }} 
+          />
+        </div>
+  
+        {/* Progress indicators */}
+        <div className="flex space-x-2">
+          {[0, 1, 2, 3].map((step) => (
+            <div
+              key={step}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                step === currentStep 
+                  ? 'bg-blue-500 scale-125' 
+                  : step < currentStep 
+                    ? 'bg-blue-300'
+                    : 'bg-gray-200'
+              }`}
+            />
+          ))}
+        </div>
+  
+        {/* Add some animated decorative elements */}
+        <style jsx>{`
+          @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fade-in {
+            animation: fade-in 0.5s ease-out forwards;
+          }
+        `}</style>
       </div>
-      <p className="mt-4 text-lg text-gray-600 font-sans">Please wait...</p>
-    </div>
-  );
+    );
+  };
 
   const HomeScreen = () => (
     <div className="min-h-screen bg-white p-4 relative" style={{ marginTop: '-5%' }}>
@@ -93,7 +191,7 @@ const ManabiyaPrototype = () => {
       <div className="max-w-md mx-auto space-y-4">
         <Card className="bg-white hover:bg-gray-50 transition-colors border border-gray-200">
           <button 
-            onClick={() => setCurrentPage('lesson')}
+            onClick={() => setCurrentPage('learn')}
             className="w-full p-6 flex items-center space-x-4"
           >
             <div className="bg-blue-100 p-3 rounded-lg">
@@ -395,10 +493,20 @@ const ManabiyaPrototype = () => {
     </Card>
   );
 
+  const playSound = (isCorrect) => {
+    if (isCorrect) {
+      correctSound?.play().catch(e => console.log('Audio play failed:', e));
+    } else {
+      wrongSound?.play().catch(e => console.log('Audio play failed:', e));
+    }
+  };
+  
   const renderQuiz = () => {
     const correctAnswer = mockLesson.word;
     
     const handleAnswerSelect = (answer) => {
+      const isCorrect = answer === correctAnswer;
+      playSound(isCorrect);
       setSelectedAnswer(answer);
       setShowFeedback(true);
     };
@@ -465,9 +573,10 @@ const ManabiyaPrototype = () => {
   const handleQuizCompletion = () => {
     setSelectedAnswer(null);
     setShowFeedback(false);
+    
     if (currentWordIndex < mockLessons.Advanced.length - 1) {
       setCurrentWordIndex(currentWordIndex + 1);
-      setCurrentPage('lesson');
+      setCurrentPage('learn');
     } else {
       // All words completed
       setCurrentWordIndex(0);
@@ -485,7 +594,7 @@ const ManabiyaPrototype = () => {
         renderInterestsSelection()
       ) : currentPage === 'home' ? (
         <HomeScreen />
-      ) : currentPage === 'lesson' ? (
+      ) : currentPage === 'learn' ? (
         renderLesson()
       ) : currentPage === 'quiz' ? (
         renderQuiz()

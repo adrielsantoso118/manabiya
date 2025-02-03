@@ -13,6 +13,7 @@ const ManabiyaPrototype = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [selectedGenre, setSelectedGenre] = useState('');
 
   // Sound effects initialization
   const [correctSound] = useState(() => 
@@ -306,41 +307,6 @@ const ManabiyaPrototype = () => {
     );
   };
 
-  const mockLessons = {
-    Advanced: [
-      {
-        word: "reckon",
-        meaning: "考える、推測する",
-        sentence: "I reckon this movie will win an Oscar next year.",
-        translation: "この映画は来年アカデミー賞を取ると思います。"
-      },
-      {
-        word: "plot",
-        meaning: "筋書き、物語",
-        sentence: "The plot of this thriller kept me on the edge of my seat.",
-        translation: "このスリラー映画の筋書きは、私をハラハラさせ続けました。"
-      },
-      {
-        word: "sequel",
-        meaning: "続編",
-        sentence: "They're making a sequel to that popular superhero movie.",
-        translation: "彼らはあの人気のあるスーパーヒーロー映画の続編を作っています。"
-      },
-      {
-        word: "cast",
-        meaning: "出演者",
-        sentence: "The cast of this film includes several famous actors.",
-        translation: "この映画の出演者には何人かの有名な俳優が含まれています。"
-      },
-      {
-        word: "premiere",
-        meaning: "初演、初公開",
-        sentence: "We're going to the premiere of the new sci-fi movie tonight.",
-        translation: "私たちは今夜、新しいSF映画の初公開に行きます。"
-      }
-    ]
-  };
-
   const interests = [
     { id: 'tech', icon: Code, label: 'Technology' },
     { id: 'art', icon: Palette, label: 'Art' },
@@ -349,6 +315,64 @@ const ManabiyaPrototype = () => {
     { id: 'movies', icon: Clapperboard, label: 'Movies' },
     { id: 'sports', icon: Trophy, label: 'Sports' }
   ];
+
+  const movieGenres = [
+    { id: 'drama', icon: "🎭", label: 'Drama', words: [
+      { word: "complicated", meaning: "複雑な", sentence: "The character's past is so complicated that it affects his present life.", translation: "そのキャラクターの過去はとても複雑で、現在の生活に影響を与えています。" },
+      { word: "emotion", meaning: "感情", sentence: "The actress expressed deep emotion in the final scene.", translation: "その女優は最後のシーンで深い感情を表現しました。" },
+      { word: "inspire", meaning: "奮起させる、感動させる", sentence: "This true story will inspire many people around the world.", translation: "この実話は世界中の多くの人を奮起させるでしょう。" },
+      { word: "realistic", meaning: "現実的な", sentence: "The film's realistic dialogue makes the story feel authentic.", translation: "その映画の現実的なセリフは物語を本物のように感じさせます。" },
+      { word: "portray", meaning: "描写する", sentence: "The actor perfectly portrayed the struggles of a single father.", translation: "その俳優はシングルファーザーの苦悩を完璧に描写しました。" }
+    ]},
+    { id: 'comedy', icon: "😂", label: 'Comedy', words: [
+      { word: "laughter", meaning: "笑い", sentence: "The entire audience burst into laughter at the comedian's joke.", translation: "観客全員がコメディアンのジョークに笑いを爆発させました。" },
+      { word: "humorous", meaning: "ユーモラスな", sentence: "The movie was full of humorous situations that made me laugh.", translation: "その映画はユーモラスな場面が満載で、笑いが止まりませんでした。" },
+      { word: "entertain", meaning: "楽しませる", sentence: "His performance really entertained the crowd.", translation: "彼のパフォーマンスは観客を本当に楽しませました。" },
+      { word: "sarcastic", meaning: "皮肉な", sentence: "The main character often makes sarcastic comments about his boss.", translation: "主人公は上司についてよく皮肉なコメントを言います。" },
+      { word: "silly", meaning: "ばかげた", sentence: "The story was silly, but it was fun to watch.", translation: "ストーリーはばかげていましたが、見ていて楽しかったです。" }
+    ]},
+    { id: 'horror', icon: "😱", label: 'Horror', words: [
+      { word: "terrify", meaning: "恐れさせる", sentence: "The haunted house scene will terrify even the bravest viewers.", translation: "そのお化け屋敷のシーンは、最も勇敢な観客さえも恐れさせるでしょう。" },
+      { word: "mystery", meaning: "謎、ミステリー", sentence: "The film's mystery kept the audience guessing until the end.", translation: "その映画の謎は観客を最後まで考えさせました。" },
+      { word: "scream", meaning: "悲鳴を上げる", sentence: "She let out a loud scream when she saw the ghost.", translation: "彼女は幽霊を見て大きな悲鳴を上げました。" },
+      { word: "creepy", meaning: "気味の悪い", sentence: "The old house had a creepy atmosphere.", translation: "その古い家には気味の悪い雰囲気がありました。" },
+      { word: "supernatural", meaning: "超自然的な", sentence: "The movie is about a detective solving supernatural cases.", translation: "その映画は超自然的な事件を解決する探偵の話です。" }
+    ]},
+    { id: 'scifi', icon: "🤖", label: 'Sci-Fi', words: [
+      { word: "artificial", meaning: "人工の", sentence: "The story takes place in a world where artificial intelligence controls everything.", translation: "その物語は、人工知能がすべてを支配する世界が舞台です。" },
+      { word: "explore", meaning: "探検する、探求する", sentence: "The astronauts explore a distant planet in search of life.", translation: "宇宙飛行士たちは生命を探すために遠い惑星を探検する。" },
+      { word: "advanced", meaning: "先進的な", sentence: "The movie features advanced technology beyond our imagination.", translation: "その映画には私たちの想像を超える先進的な技術が登場します。" },
+      { word: "predict", meaning: "予測する", sentence: "Scientists in the film try to predict the future using data.", translation: "その映画の科学者たちはデータを使って未来を予測しようとします。" },
+      { word: "alien", meaning: "異星人、異質な", sentence: "The team discovers an alien spaceship hidden under the ice.", translation: "チームは氷の下に隠された異星人の宇宙船を発見します。" }
+    ]},
+    { id: 'action', icon: "🔥", label: 'Action', words: [
+      { word: "chase", meaning: "追跡する", sentence: "The police were in a high-speed chase with the criminal.", translation: "警察は犯人と高速追跡をしていました。" },
+      { word: "dangerous", meaning: "危険な", sentence: "This mission is extremely dangerous and requires great skill.", translation: "この任務は非常に危険で、高い技術が必要です。" },
+      { word: "explosion", meaning: "爆発", sentence: "There was a huge explosion in the middle of the city.", translation: "街の真ん中で大きな爆発が起こりました。" },
+      { word: "rescue", meaning: "救助する", sentence: "The hero risked his life to rescue the hostages.", translation: "ヒーローは人質を救助するために命をかけました。" },
+      { word: "weapon", meaning: "武器", sentence: "The villain had a powerful weapon that could destroy a city.", translation: "悪役は都市を破壊できる強力な武器を持っていました。" }
+    ]},
+    { id: 'fantasy', icon: "🏰", label: 'Fantasy', words: [
+      { word: "legend", meaning: "伝説", sentence: "The movie is based on an ancient legend of a lost kingdom.", translation: "その映画は失われた王国の古代の伝説に基づいています。" },
+      { word: "magic", meaning: "魔法", sentence: "The young wizard learns how to use magic to defeat evil.", translation: "若い魔法使いは悪を倒すための魔法を学びます。" },
+      { word: "creature", meaning: "生き物", sentence: "A mysterious creature appears in the enchanted forest.", translation: "謎の生き物が魔法の森に現れました。" },
+      { word: "adventure", meaning: "冒険", sentence: "The story follows a group of heroes on an epic adventure.", translation: "その物語は英雄たちの壮大な冒険を描いています。" },
+      { word: "enchanted", meaning: "魔法にかけられた", sentence: "The castle was enchanted by an ancient spell.", translation: "その城は古代の呪文で魔法にかけられていました。" }
+    ]}
+  ];
+
+  const [mockLessons, setMockLessons] = useState({
+    Advanced: []
+  });
+
+  useEffect(() => {
+    if (selectedGenre) {
+      const selectedGenreWords = movieGenres.find(genre => genre.id === selectedGenre)?.words || [];
+      setMockLessons({
+        Advanced: selectedGenreWords
+      });
+    }
+  }, [selectedGenre]);
 
   const mockLesson = mockLessons.Advanced[currentWordIndex];
   
@@ -396,10 +420,10 @@ const ManabiyaPrototype = () => {
         <CardTitle className="text-blue-500">Welcome to manabiya</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6 max-h-[75vh] overflow-y-auto">  {/* This will allow scrolling */}
+        <div className="space-y-6 max-h-[75vh] overflow-y-auto">
           <div>
             <h3 className="text-base font-medium mb-4 text-gray-600">
-              Choose an interest to start. Don't worry, you can add more later!
+              Choose an interest to start with.
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {interests.map(({ id, icon: Icon, label }) => (
@@ -417,6 +441,29 @@ const ManabiyaPrototype = () => {
               ))}
             </div>
           </div>
+  
+          {selectedInterests.includes('movies') && (
+            <div>
+              <h3 className="text-base font-medium mb-4 text-gray-600">
+                Choose a movie genre.
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                {movieGenres.map(({ id, icon, label }) => (
+                  <button
+                    key={id}
+                    onClick={() => setSelectedGenre(id)}
+                    className={`p-4 rounded-lg flex items-center space-x-3 transition-colors
+                      ${selectedGenre === id 
+                        ? 'bg-blue-100 text-blue-600' 
+                        : 'bg-gray-50 hover:bg-gray-100'}`}
+                  >
+                    <span className="text-2xl">{icon}</span>
+                    <span className="text-sm">{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
   
           <div>
             <h3 className="text-lg font-medium mb-4">Select Your Level</h3>
@@ -436,7 +483,9 @@ const ManabiyaPrototype = () => {
             </div>
           </div>
   
-          {selectedInterests.length > 0 && proficiencyLevel && (
+          {selectedInterests.length > 0 && 
+           (!selectedInterests.includes('movies') || selectedGenre) && 
+           proficiencyLevel && (
             <button
               onClick={startLesson}
               className="w-full p-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
@@ -447,7 +496,7 @@ const ManabiyaPrototype = () => {
         </div>
       </CardContent>
     </Card>
-  );
+  )  
 
   const renderLesson = () => (
     <Card className="mb-8">

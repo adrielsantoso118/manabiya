@@ -271,35 +271,35 @@ const ManabiyaPrototype = () => {
     };
   
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Settings</CardTitle>
+      <div className="fixed inset-0 w-[360px] h-[640px] mx-auto bg-black bg-opacity-50 flex items-center justify-center">
+        <Card className="w-11/12 max-h-96">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Settings</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3">
             <div>
-              <h3 className="text-lg font-medium mb-4">Study Mode</h3>
+              <h3 className="text-base font-medium mb-2">Study Mode</h3>
               <div className="space-y-2">
                 {Object.entries(modes).map(([mode, description]) => (
                   <button
                     key={mode}
                     onClick={() => setSelectedMode(mode)}
-                    className={`w-full p-4 rounded-lg text-left transition-colors flex justify-between items-center
+                    className={`w-full p-3 rounded-lg text-left transition-colors flex justify-between items-center text-sm
                       ${selectedMode === mode 
                         ? 'bg-blue-100 text-blue-600' 
                         : 'bg-gray-50 hover:bg-gray-100'}`}
                   >
                     <span className="capitalize">{mode}</span>
-                    <span className="text-sm text-gray-500">{description}</span>
+                    <span className="text-gray-500">{description}</span>
                   </button>
                 ))}
               </div>
             </div>
   
-            <div className="flex justify-end space-x-2 pt-4">
+            <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setShowSettings(false)}
-                className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+                className="px-3 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors text-sm"
               >
                 Done
               </button>

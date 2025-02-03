@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clapperboard, Music, Code, Palette, Trophy, Gamepad2, Volume2, Check, X, BrainCircuit, BookOpen, RefreshCcw, LineChart, Settings } from 'lucide-react';
+import { Clapperboard, Music, Code, Palette, Trophy, Gamepad2, Volume2, Check, X, BrainCircuit, BookOpen, RefreshCcw, Settings, Plus, BookText } from 'lucide-react';
 import { movieCategories, sportsCategories } from '@/assets/vocab-data';
 
 const ManabiyaPrototype = () => {
@@ -12,6 +12,7 @@ const ManabiyaPrototype = () => {
   const [proficiencyLevel, setProficiencyLevel] = useState('');
   const [isPersonalizingLoading, setIsPersonalizingLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [categoryProgress, setCategoryProgress] = useState(0);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [speechSynthesis, setSpeechSynthesis] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -221,18 +222,18 @@ const ManabiyaPrototype = () => {
             </div>
           </button>
         </Card>
-  
+
         <Card className="bg-white hover:bg-gray-50 transition-colors border border-gray-200">
           <button 
-            onClick={() => setCurrentPage('progress')}
+            onClick={() => setCurrentPage('articles')}
             className="w-full p-6 flex items-center space-x-4"
           >
-            <div className="bg-purple-100 p-3 rounded-lg">
-              <LineChart className="w-6 h-6 text-purple-500" />
+            <div className="bg-orange-100 p-3 rounded-lg">
+              <BookText className="w-6 h-6 text-orange-500" />
             </div>
             <div className="flex-1 text-left">
-              <h2 className="font-semibold text-xl text-gray-900">Progress</h2>
-              <p className="text-sm text-gray-600">Track your learning journey</p>
+              <h2 className="font-semibold text-xl text-gray-900">Articles</h2>
+              <p className="text-sm text-gray-600">Read about your interests</p>
             </div>
           </button>
         </Card>
@@ -249,7 +250,7 @@ const ManabiyaPrototype = () => {
       {/* Settings Button */}
       <button 
         onClick={() => setShowSettings(true)}
-        className="absolute bottom-16 right-2 p-3 bg-white rounded-full shadow-lg hover:bg-gray-50 transition-colors border border-gray-200"
+        className="absolute bottom-16 right-3 p-3 bg-white rounded-full shadow-lg hover:shadow-xl hover:bg-blue-50 transform hover:-translate-y-0.5 transition-colors border border-gray-200"
         aria-label="Settings"
       >
         <Settings className="w-6 h-6 text-gray-600" />
@@ -317,6 +318,12 @@ const ManabiyaPrototype = () => {
     { id: 'movies', icon: Clapperboard, label: 'Movies' },
     { id: 'sports', icon: Trophy, label: 'Sports' }
   ];
+
+  useEffect(() => {
+    if (currentPage === 'learn') {
+      setCategoryProgress(categoryProgress);
+    }
+  }, [currentPage]);
 
   const [mockLessons, setMockLessons] = useState({
     Advanced: []
@@ -485,8 +492,123 @@ const ManabiyaPrototype = () => {
     </Card>
   )  
 
+  const LearnScreen = () => {
+    const interest = selectedInterests[0];
+    const category = selectedMovieCategory || selectedSportCategory;
+    const handleReturn = () => setCurrentPage('home');
+    
+    const getInterestIcon = () => {
+      if (interest === 'movies') {
+        const movieObj = movieCategories.find(m => m.id === category);
+        return movieObj?.icon || '🎬';
+      }
+      if (interest === 'sports') {
+        const sportsObj = sportsCategories.find(s => s.id === category);
+        return sportsObj?.icon || '🏆';
+      }
+      const interestObj = interests.find(i => i.id === interest);
+      const Icon = interestObj?.icon;
+      return Icon ? <Icon className="w-6 h-6 text-gray-600" /> : null;
+    };
+
+    const getInterestDisplay = () => {
+      const interestObj = interests.find(i => i.id === interest);
+      if (interest === 'movies') {
+        const movieObj = movieCategories.find(m => m.id === category);
+        return `${interestObj.label} > ${movieObj?.label}`;
+      }
+      if (interest === 'sports') {
+        const sportsObj = sportsCategories.find(s => s.id === category);
+        return `${interestObj.label} > ${sportsObj?.label}`;
+      }
+      return interestObj?.label || '';
+    };
+  
+    return (
+      <div className="min-h-screen bg-white p-4 relative">
+        {/* Title */}
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-gray-900">Your Course</h1>
+          <p className="text-sm text-gray-500">Master vocabulary in context</p>
+        </div>
+
+        <button 
+          onClick={() => setCurrentPage('lesson')}
+          className="w-full bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 border border-gray-100 overflow-hidden"
+        >
+          {/* Card Header */}
+          <div className="p-5 border-b border-gray-100">
+            <div className="flex items-center space-x-3">
+              <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
+                {getInterestIcon()}
+              </div>
+              <div className="flex-grow">
+                <h2 className="font-semibold text-gray-900">{getInterestDisplay()}</h2>
+                <p className="text-sm text-gray-500">Tap to continue learning</p>
+              </div>
+              <span className="text-lg font-semibold text-blue-500">{categoryProgress}%</span>
+            </div>
+          </div>
+
+          {/* Progress Section */}
+          <div className="p-5">
+            <div className="flex justify-between text-sm text-gray-600 mb-2">
+              <span>Course Progress</span>
+              <span>{categoryProgress}/100</span>
+            </div>
+            <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-blue-400 to-blue-500 rounded-full transition-all duration-700 ease-in-out"
+                style={{ 
+                  width: `${categoryProgress}%`,
+                  boxShadow: '0 0 8px rgba(59, 130, 246, 0.5)'
+                }}
+              />
+            </div>
+          </div>
+        </button>
+
+        <button 
+          className="absolute bottom-20 right-3 p-3 bg-white rounded-full shadow-lg hover:shadow-xl hover:bg-blue-50 transform hover:-translate-y-0.5 transition-all duration-300 border border-gray-200"
+          aria-label="Add"
+        >
+          <Plus className="w-6 h-6 text-blue-500" />
+        </button>
+
+        <button 
+          onClick={handleReturn}
+          className="fixed bottom-16 p-3 bg-white rounded-full shadow-lg hover:shadow-xl hover:bg-blue-50 transform hover:-translate-y-0.5 transition-colors border border-gray-200"
+          style={{ 
+            left: '50%',
+            transform: 'translateX(calc(-50% - 130px))',
+            width: '48px',
+            height: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          aria-label="Return"
+        >
+          <svg 
+            className="w-6 h-6 text-gray-600"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M10 19l-7-7m0 0l7-7m-7 7h18" 
+            />
+          </svg>
+        </button>
+      </div>
+    );
+  };
+
   const renderLesson = () => (
-    <Card className="mb-8">
+    <Card className="mb-8 relative pb-16">
       <CardHeader>
         <CardTitle className="text-blue-500 flex justify-between items-center">
           <span>Today's Lesson</span>
@@ -526,6 +648,35 @@ const ManabiyaPrototype = () => {
           </button>
         </div>
       </CardContent>
+  
+      <button 
+        onClick={() => setCurrentPage('learn')}
+        className="fixed bottom-16 p-3 bg-white rounded-full shadow-lg hover:shadow-xl hover:bg-blue-50 transform hover:-translate-y-0.5 transition-colors border border-gray-200"
+        style={{ 
+          left: '50%',
+          transform: 'translateX(calc(-50% - 130px))',
+          width: '48px',
+          height: '48px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+        aria-label="Return"
+      >
+        <svg 
+          className="w-6 h-6 text-gray-600"
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M10 19l-7-7m0 0l7-7m-7 7h18" 
+          />
+        </svg>
+      </button>
     </Card>
   );
 
@@ -546,11 +697,11 @@ const ManabiyaPrototype = () => {
       setSelectedAnswer(answer);
       setShowFeedback(true);
     };
-
+  
     const isCorrect = selectedAnswer === correctAnswer;
-
+  
     return (
-      <Card className="mb-8">
+      <Card className="mb-8 relative pb-16">
         <CardHeader>
           <CardTitle className="text-blue-500">Quick Practice</CardTitle>
         </CardHeader>
@@ -581,7 +732,7 @@ const ManabiyaPrototype = () => {
                 </button>
               ))}
             </div>
-
+  
             {showFeedback && (
               <div className={`p-4 rounded-lg ${isCorrect ? 'bg-green-50' : 'bg-red-50'}`}>
                 <p className={`font-medium ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
@@ -591,7 +742,7 @@ const ManabiyaPrototype = () => {
                 </p>
               </div>
             )}
-
+  
             {showFeedback && (
               <button
                 onClick={handleQuizCompletion}
@@ -602,6 +753,35 @@ const ManabiyaPrototype = () => {
             )}
           </div>
         </CardContent>
+  
+        <button 
+          onClick={() => setCurrentPage('learn')}
+          className="fixed bottom-16 p-3 bg-white rounded-full shadow-lg hover:shadow-xl hover:bg-blue-50 transform hover:-translate-y-0.5 transition-colors border border-gray-200"
+          style={{ 
+            left: '50%',
+            transform: 'translateX(calc(-50% - 130px))',
+            width: '48px',
+            height: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          aria-label="Return"
+        >
+          <svg 
+            className="w-6 h-6 text-gray-600"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M10 19l-7-7m0 0l7-7m-7 7h18" 
+            />
+          </svg>
+        </button>
       </Card>
     );
   };
@@ -609,15 +789,108 @@ const ManabiyaPrototype = () => {
   const handleQuizCompletion = () => {
     setSelectedAnswer(null);
     setShowFeedback(false);
+    setCategoryProgress(prev => Math.min(prev + 2, 100));
     
     if (currentWordIndex < mockLessons.Advanced.length - 1) {
       setCurrentWordIndex(currentWordIndex + 1);
-      setCurrentPage('learn');
+      setCurrentPage('lesson');
     } else {
       // All words completed
       setCurrentWordIndex(0);
-      setCurrentPage('home');
+      setCurrentPage('learn');
     }
+  };
+
+  const ArticlesScreen = () => {
+    const handleReturn = () => setCurrentPage('home');
+  
+    const articles = [
+      {
+        id: 1,
+        title: "Fantasy Movie IP Dominates 2025 Box Office",
+        source: "CNBC",
+        date: "Oct 6, 2024",
+        url: "https://www.cnbc.com/2024/10/06/box-office-2025-movies-existing-intellectual-property.html",
+        summary: "Analysis of upcoming fantasy franchises and their box office predictions",
+        level: "Advanced"
+      },
+      {
+        id: 2,
+        title: "Avatar: Fire and Ash - Everything We Know",
+        source: "CBR",
+        date: "2024",
+        url: "https://www.cbr.com/everything-we-know-about-avatar-fire-and-ash/",
+        summary: "Latest updates on the next Avatar installment",
+        level: "Intermediate"
+      },
+      {
+        id: 3,
+        title: "How to Train Your Dragon Live-Action Details",
+        source: "Collider",
+        date: "2024",
+        url: "https://collider.com/how-to-train-your-dragon-live-action-release-date-director-plot/",
+        summary: "Cast, plot, and release date for the upcoming adaptation",
+        level: "Beginner"
+      }
+    ];
+  
+    return (
+      <div className="min-h-screen bg-white p-4 pb-24 relative overflow-y-auto" style={{ maxHeight: "640px" }}>
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-gray-900">Your Weekly News Feed</h1>
+          <p className="text-sm text-gray-500">Read about your interests in English!</p>
+        </div>
+  
+        <div className="space-y-4">
+          {articles.map(article => (
+            <Card key={article.id} className="hover:shadow-lg transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-start mb-2">
+                  <h2 className="text-lg font-semibold text-gray-900">{article.title}</h2>
+                  <span className="px-2 py-1 text-xs rounded bg-blue-100 text-blue-600">
+                    {article.level}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 mb-4">{article.summary}</p>
+                <div className="flex justify-between items-center text-sm text-gray-500">
+                  <span>{article.source}</span>
+                  <span>{article.date}</span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+  
+        <button 
+          onClick={handleReturn}
+          className="fixed bottom-16 p-3 bg-white rounded-full shadow-lg hover:shadow-xl hover:bg-blue-50 transform hover:-translate-y-0.5 transition-colors border border-gray-200"
+          style={{ 
+            left: '50%',
+            transform: 'translateX(calc(-50% - 130px))',
+            width: '48px',
+            height: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          aria-label="Return"
+        >
+          <svg 
+            className="w-6 h-6 text-gray-600"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M10 19l-7-7m0 0l7-7m-7 7h18" 
+            />
+          </svg>
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -631,9 +904,15 @@ const ManabiyaPrototype = () => {
       ) : currentPage === 'home' ? (
         <HomeScreen />
       ) : currentPage === 'learn' ? (
+        <LearnScreen />
+      ) : currentPage === 'lesson' ? (
         renderLesson()
       ) : currentPage === 'quiz' ? (
         renderQuiz()
+      ) : currentPage === 'review' ? (
+        <HomeScreen />
+      ) : currentPage === 'articles' ? (
+        <ArticlesScreen />
       ) : null}
     </div>
   );

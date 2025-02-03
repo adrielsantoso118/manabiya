@@ -4,18 +4,18 @@ import { Clapperboard, Music, Code, Palette, Trophy, Gamepad2, Volume2, Check, X
 import { movieCategories, sportsCategories } from '@/assets/vocab-data';
 
 const ManabiyaPrototype = () => {
-  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState('interests');
+  const [isStartLoading, setIsStartLoading] = useState(true);
   const [selectedInterests, setSelectedInterests] = useState([]);
+  const [selectedMovieCategory, setSelectedMovieCategory] = useState('');
+  const [selectedSportCategory, setSelectedSportCategory] = useState('');
   const [proficiencyLevel, setProficiencyLevel] = useState('');
+  const [isPersonalizingLoading, setIsPersonalizingLoading] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [speechSynthesis, setSpeechSynthesis] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [selectedGenre, setSelectedGenre] = useState('');
-  const [selectedSportCategory, setSelectedSportCategory] = useState('');
 
   // Sound effects initialization
   const [correctSound] = useState(() => 
@@ -39,20 +39,20 @@ const ManabiyaPrototype = () => {
   // Loading screen timer
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false);
+      setIsStartLoading(false);
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
   const handleTransition = (nextPage) => {
-    setIsTransitioning(true);
+    setIsPersonalizingLoading(true);
     setTimeout(() => {
-      setIsTransitioning(false);
+      setIsPersonalizingLoading(false);
       setCurrentPage(nextPage);
     }, 5000);
   };
 
-  const LoadingScreen = () => (
+  const StartLoadingScreen = () => (
     <div className="h-screen w-full flex flex-col items-center justify-center bg-white">
       <h1 
         className="text-5xl md:text-5xl font-bold text-blue-500 mb-4"
@@ -68,7 +68,7 @@ const ManabiyaPrototype = () => {
     </div>
   );
 
-  const TransitionScreen = () => {
+  const PersonalizingLoadingScreen = () => {
     const [progress, setProgress] = useState(0);
     const [currentStep, setCurrentStep] = useState(0);
     
@@ -323,10 +323,10 @@ const ManabiyaPrototype = () => {
   });
 
   useEffect(() => {
-    if (selectedGenre) {
-      const selectedGenreWords = movieCategories.find(genre => genre.id === selectedGenre)?.words || [];
+    if (selectedMovieCategory) {
+      const selectedMovieWords = movieCategories.find(genre => genre.id === selectedMovieCategory)?.words || [];
       setMockLessons({
-        Advanced: selectedGenreWords
+        Advanced: selectedMovieWords
       });
     } else if (selectedSportCategory) {
       const selectedSportWords = sportsCategories.find(category => category.id === selectedSportCategory)?.words || [];
@@ -334,7 +334,7 @@ const ManabiyaPrototype = () => {
         Advanced: selectedSportWords
       });
     }
-  }, [selectedGenre, selectedSportCategory]);
+  }, [selectedMovieCategory, selectedSportCategory]);
 
   const mockLesson = mockLessons.Advanced[currentWordIndex];
   
@@ -413,9 +413,9 @@ const ManabiyaPrototype = () => {
                 {movieCategories.map(({ id, icon, label }) => (
                   <button
                     key={id}
-                    onClick={() => setSelectedGenre(id)}
+                    onClick={() => setSelectedMovieCategory(id)}
                     className={`p-4 rounded-lg flex items-center space-x-3 transition-colors
-                      ${selectedGenre === id 
+                      ${selectedMovieCategory === id 
                         ? 'bg-blue-100 text-blue-600' 
                         : 'bg-gray-50 hover:bg-gray-100'}`}
                   >
@@ -470,7 +470,7 @@ const ManabiyaPrototype = () => {
   
           {selectedInterests.length > 0 && 
             ((!selectedInterests.includes('movies') && !selectedInterests.includes('sports')) || 
-              (selectedInterests.includes('movies') && selectedGenre) ||
+              (selectedInterests.includes('movies') && selectedMovieCategory) ||
               (selectedInterests.includes('sports') && selectedSportCategory)) && 
             proficiencyLevel && (
               <button
@@ -622,10 +622,10 @@ const ManabiyaPrototype = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-4 bg-white min-h-screen">
-      {isLoading ? (
-        <LoadingScreen />
-      ) : isTransitioning ? (
-        <TransitionScreen />
+      {isStartLoading ? (
+        <StartLoadingScreen />
+      ) : isPersonalizingLoading ? (
+        <PersonalizingLoadingScreen />
       ) : currentPage === 'interests' ? (
         renderInterestsSelection()
       ) : currentPage === 'home' ? (
